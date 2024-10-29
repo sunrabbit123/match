@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { match } from '../src';
+import { isBoolean, isString } from 'es-toolkit/predicate';
+import { isNumber } from 'es-toolkit/compat';
+import exp from 'constants';
 
 describe('match', () => {
   it('문자열 매칭', () => {
@@ -52,5 +55,16 @@ describe('match', () => {
       .get();
 
     expect(result).toBeUndefined();
+  });
+
+  it('es-toolkit', () => {
+    const value = 123 as string | number | boolean;
+    const result = match(value)
+      .case({ typeGuard: isNumber, map: (v) => v - 122 })
+      .case({ typeGuard: isBoolean, map: (v) => Number(v) })
+      .case({ typeGuard: isString, map: (v) => v.valueOf() })
+      .get();
+
+    expect(result).toBe(1);
   });
 });

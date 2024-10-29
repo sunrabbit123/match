@@ -6,10 +6,10 @@ import { isNumber } from 'es-toolkit/compat';
 describe('match', () => {
   it('문자열 매칭', () => {
     const result = match('hello')
-      .case({
-        typeGuard: (v): v is string => typeof v === 'string',
-        map: (v) => v.toUpperCase(),
-      })
+      .case(
+        (v): v is string => typeof v === 'string',
+        (v) => v.toUpperCase()
+      )
       .get();
 
     expect(result).toBe('HELLO');
@@ -17,10 +17,10 @@ describe('match', () => {
 
   it('숫자 매칭', () => {
     const result = match(42)
-      .case({
-        typeGuard: (v): v is number => typeof v === 'number',
-        map: (v) => v * 2,
-      })
+      .case(
+        (v): v is number => typeof v === 'number',
+        (v) => v * 2
+      )
       .get();
 
     expect(result).toBe(84);
@@ -30,14 +30,14 @@ describe('match', () => {
     const value = 'test' as string | number;
 
     const result = match(value)
-      .case({
-        typeGuard: (v): v is number => typeof v === 'number',
-        map: (v) => v * 2,
-      })
-      .case({
-        typeGuard: (v): v is string => typeof v === 'string',
-        map: (v) => v.length,
-      })
+      .case(
+        (v): v is number => typeof v === 'number',
+        (v) => v * 2
+      )
+      .case(
+        (v): v is string => typeof v === 'string',
+        (v) => v.length
+      )
       .get();
 
     expect(result).toBe(4);
@@ -47,10 +47,10 @@ describe('match', () => {
   it('매칭 실패시 undefined 반환', () => {
     const value = 123 as string | number;
     const result = match(value)
-      .case({
-        typeGuard: (v): v is string => typeof v === 'string',
-        map: (v) => v.toUpperCase(),
-      })
+      .case(
+        (v): v is string => typeof v === 'string',
+        (v) => v.toUpperCase()
+      )
       .get();
 
     expect(result).toBeUndefined();
@@ -59,9 +59,9 @@ describe('match', () => {
   it('es-toolkit과의 결합', () => {
     const value = 123 as string | number | boolean;
     const result = match(value)
-      .case({ typeGuard: isNumber, map: (v) => v - 122 })
-      .case({ typeGuard: isBoolean, map: (v) => Number(v) })
-      .case({ typeGuard: isString, map: (v) => v.valueOf() })
+      .case(isNumber, (v) => v - 122)
+      .case(isBoolean, (v) => Number(v))
+      .case(isString, (v) => v.valueOf())
       .get();
 
     expect(result).toBe(1);

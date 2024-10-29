@@ -10,6 +10,6 @@ const res1 = match(123 as string | number)
     (v): v is number => typeof v === 'number',
     (v) => v.toString()
   )
-  .get();
+  .run();
 
 checks([check<typeof res1, string | undefined, Pass>()]);

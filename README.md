@@ -24,10 +24,10 @@ import { isNumber } from 'es-toolkit/compat';
 
 const value = 123 as string | number | boolean;
 const result = match(value)
-  .case({ typeGuard: isNumber, map: (v) => v - 122 })
-  .case({ typeGuard: isBoolean, map: (v) => Number(v) })
-  .case({ typeGuard: isString, map: (v) => v.valueOf() })
-  .get();
+  .case(isNumber, (v) => v - 122)
+  .case(isBoolean, (v) => Number(v))
+  .case(isString, (v) => v.valueOf())
+  .run();
 
 expect(result).toBe(1);
 ```

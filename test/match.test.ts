@@ -7,10 +7,10 @@ describe('match', () => {
   it('문자열 매칭', () => {
     const result = match('hello')
       .case(
-        (v): v is string => typeof v === 'string',
+        (v): v is 'hello' => v === 'hello',
         (v) => v.toUpperCase()
       )
-      .get();
+      .run();
 
     expect(result).toBe('HELLO');
   });
@@ -18,10 +18,10 @@ describe('match', () => {
   it('숫자 매칭', () => {
     const result = match(42)
       .case(
-        (v): v is number => typeof v === 'number',
+        (v): v is 42 => v === 42,
         (v) => v * 2
       )
-      .get();
+      .run();
 
     expect(result).toBe(84);
   });
@@ -38,7 +38,7 @@ describe('match', () => {
         (v): v is string => typeof v === 'string',
         (v) => v.length
       )
-      .get();
+      .run();
 
     expect(result).toBe(4);
     //      ^?
@@ -51,7 +51,7 @@ describe('match', () => {
         (v): v is string => typeof v === 'string',
         (v) => v.toUpperCase()
       )
-      .get();
+      .run();
 
     expect(result).toBeUndefined();
   });
@@ -62,7 +62,7 @@ describe('match', () => {
       .case(isNumber, (v) => v - 122)
       .case(isBoolean, (v) => Number(v))
       .case(isString, (v) => v.valueOf())
-      .get();
+      .run();
 
     expect(result).toBe(1);
   });

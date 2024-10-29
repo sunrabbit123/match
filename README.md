@@ -6,6 +6,8 @@ The code piece is simple, so you can copy and paste it, or you can install it.
 
 However, if you copy and paste, please press the star once.
 
+refer https://github.com/millsp/ts-toolbelt for type testing
+
 ## Installation
 
 ```bash

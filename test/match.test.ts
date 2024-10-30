@@ -12,7 +12,7 @@ describe('match', () => {
       )
       .run();
 
-    expect(result).toBe('HELLO');
+    expect(result.handled).toBe('HELLO');
   });
 
   it('숫자 매칭', () => {
@@ -23,7 +23,7 @@ describe('match', () => {
       )
       .run();
 
-    expect(result).toBe(84);
+    expect(result.handled).toBe(84);
   });
 
   it('여러 케이스 매칭', () => {
@@ -40,8 +40,7 @@ describe('match', () => {
       )
       .run();
 
-    expect(result).toBe(4);
-    //      ^?
+    expect(result.handled).toBe(4);
   });
 
   it('매칭 실패시 undefined 반환', () => {
@@ -53,7 +52,7 @@ describe('match', () => {
       )
       .run();
 
-    expect(result).toBeUndefined();
+    expect(result.handled).toBeUndefined();
   });
 
   it('es-toolkit과의 결합', () => {
@@ -64,6 +63,6 @@ describe('match', () => {
       .case(isString, (v) => v.valueOf())
       .run();
 
-    expect(result).toBe(1);
+    expect(result.handled).toBe(1);
   });
 });

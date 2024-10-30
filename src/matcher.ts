@@ -41,3 +41,7 @@ export class Matcher<const T, R = never> {
     };
   }
 }
+
+export const match = <const T>(target: T) => {
+  return new Matcher(target);
+};

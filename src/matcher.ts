@@ -1,7 +1,12 @@
-type MatcherState<T> = {
-  matched: boolean;
-  handled: T | undefined;
-};
+type MatcherState<T> =
+  | {
+      matched: true;
+      handled: T;
+    }
+  | {
+      matched: false;
+      handled: undefined;
+    };
 
 export class Matcher<const T, R = never> {
   state: MatcherState<R>;
@@ -26,10 +31,13 @@ export class Matcher<const T, R = never> {
       handled: handler(this.target),
     };
 
-    return this as Matcher<T, R | V>;
+    return this as Matcher<Exclude<T, U>, R | V>;
   }
 
-  public run(): R | undefined {
-    return this.state.handled;
+  public run(): MatcherState<R> & { origin: T } {
+    return {
+      ...this.state,
+      origin: this.target,
+    };
   }
 }

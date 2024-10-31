@@ -4,7 +4,7 @@
      * ------------------------------------------------------------------------------------------------------------------------------------------------ */
     // "incremental": true,                   /* 증분 컴파일 활성화 */
     "target": "ESNext" /* ECMAScript 목표 버전 설정: 'ES3'(기본), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
-    "module": "ESNext" /* 생성될 모듈 코드 설정: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
+    "module": "CommonJS" /* 생성될 모듈 코드 설정: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "lib": ["ESNext"] /* 컴파일 과정에 사용될 라이브러리 파일 설정 */,
     //  "allowJs": true,                          /* JavaScript 파일 컴파일 허용 */
     //  "checkJs": true,                       /* .js 파일 오류 리포트 설정 */
@@ -44,7 +44,7 @@
 
     /* 모듈 분석 옵션
      * ------------------------------------------------------------------------------------------------------------------------------------------------ */
-    "moduleResolution": "Bundler" /* 모듈 분석 방법 설정: 'node' (Node.js) 또는 'classic' (TypeScript pre-1.6). */,
+    "moduleResolution": "node" /* 모듈 분석 방법 설정: 'node' (Node.js) 또는 'classic' (TypeScript pre-1.6). */,
     // "baseUrl": "./dist",                       /* 절대 경로 모듈이 아닌, 모듈이 기본적으로 위치한 디렉토리 설정 (예: './modules-name') */
     // "paths": {},                           /* 'baseUrl'을 기준으로 상대 위치로 가져오기를 다시 매핑하는 항목 설정 */
     // "rootDirs": [],                        /* 런타임 시 프로젝트 구조를 나타내는 로트 디렉토리 목록 */

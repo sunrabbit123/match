@@ -10,6 +10,35 @@ import { match } from '../src';
 
 type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
+const mockedmatch = <T, U>(target: T, list: [T, (src: T) => U][]) => {
+  const a = list.find((v) => {
+    if (typeof v[0] === 'function') {
+      return v[0](target);
+    }
+    return v[0] === target;
+  });
+
+  if (!a) {
+    return undefined;
+  }
+  return a[1](target);
+};
+
+const mockMatch = (digit: Digit) => {
+  return mockedmatch(digit, [
+    [0, () => 'zero'],
+    [1, () => 'one'],
+    [2, () => 'two'],
+    [3, () => 'three'],
+    [4, () => 'four'],
+    [5, () => 'five'],
+    [6, () => 'six'],
+    [7, () => 'seven'],
+    [8, () => 'eight'],
+    [9, () => 'nine'],
+  ]);
+};
+
 const testMatch = (digit: Digit) => {
   return match(digit)
     .case(0, () => 'zero')
@@ -54,91 +83,93 @@ const testTsPatternOtherwise = (digit: Digit) => {
     .otherwise(() => '');
 };
 
-const testIfElse = (digit: Digit) => {
-  if (digit === 0) {
-    return 'zero';
-  } else if (digit === 1) {
-    return 'one';
-  } else if (digit === 2) {
-    return 'two';
-  } else if (digit === 3) {
-    return 'three';
-  } else if (digit === 4) {
-    return 'four';
-  } else if (digit === 5) {
-    return 'five';
-  } else if (digit === 6) {
-    return 'six';
-  } else if (digit === 7) {
-    return 'seven';
-  } else if (digit === 8) {
-    return 'eight';
-  } else if (digit === 9) {
-    return 'nine';
-  } else {
-    return '';
-  }
-};
+// const testIfElse = (digit: Digit) => {
+//   if (digit === 0) {
+//     return 'zero';
+//   } else if (digit === 1) {
+//     return 'one';
+//   } else if (digit === 2) {
+//     return 'two';
+//   } else if (digit === 3) {
+//     return 'three';
+//   } else if (digit === 4) {
+//     return 'four';
+//   } else if (digit === 5) {
+//     return 'five';
+//   } else if (digit === 6) {
+//     return 'six';
+//   } else if (digit === 7) {
+//     return 'seven';
+//   } else if (digit === 8) {
+//     return 'eight';
+//   } else if (digit === 9) {
+//     return 'nine';
+//   } else {
+//     return '';
+//   }
+// };
 
-const testSwitch = (digit: Digit) => {
-  switch (digit) {
-    case 0:
-      return 'zero';
-    case 1:
-      return 'one';
-    case 2:
-      return 'two';
-    case 3:
-      return 'three';
-    case 4:
-      return 'four';
-    case 5:
-      return 'five';
-    case 6:
-      return 'six';
-    case 7:
-      return 'seven';
-    case 8:
-      return 'eight';
-    case 9:
-      return 'nine';
-    default:
-      return '';
-  }
-};
+// const testSwitch = (digit: Digit) => {
+//   switch (digit) {
+//     case 0:
+//       return 'zero';
+//     case 1:
+//       return 'one';
+//     case 2:
+//       return 'two';
+//     case 3:
+//       return 'three';
+//     case 4:
+//       return 'four';
+//     case 5:
+//       return 'five';
+//     case 6:
+//       return 'six';
+//     case 7:
+//       return 'seven';
+//     case 8:
+//       return 'eight';
+//     case 9:
+//       return 'nine';
+//     default:
+//       return '';
+//   }
+// };
 
-const testTernary = (digit: Digit) => {
-  return digit === 0
-    ? 'zero'
-    : digit === 1
-      ? 'one'
-      : digit === 2
-        ? 'two'
-        : digit === 3
-          ? 'three'
-          : digit === 4
-            ? 'four'
-            : digit === 5
-              ? 'five'
-              : digit === 6
-                ? 'six'
-                : digit === 7
-                  ? 'seven'
-                  : digit === 8
-                    ? 'eight'
-                    : digit === 9
-                      ? 'nine'
-                      : '';
-};
+// const testTernary = (digit: Digit) => {
+//   return digit === 0
+//     ? 'zero'
+//     : digit === 1
+//       ? 'one'
+//       : digit === 2
+//         ? 'two'
+//         : digit === 3
+//           ? 'three'
+//           : digit === 4
+//             ? 'four'
+//             : digit === 5
+//               ? 'five'
+//               : digit === 6
+//                 ? 'six'
+//                 : digit === 7
+//                   ? 'seven'
+//                   : digit === 8
+//                     ? 'eight'
+//                     : digit === 9
+//                       ? 'nine'
+//                       : '';
+// };
 
 suite(
   '@sunrabbit123/match.benchmark/always-last-digit',
+  add('testMatch', () => mockMatch(9)),
+
   add('@sunrabbit123/match.run()', () => testMatch(9)),
   add('ts-pattern.exhaustive()', () => testTsPatternExhaustive(9)),
   add('ts-pattern.otherwise()', () => testTsPatternOtherwise(9)),
-  add('if/else', () => testIfElse(9)),
-  add('switch', () => testSwitch(9)),
-  add('ternary', () => testTernary(9)),
+  // add('if/else', () => testIfElse(9)),
+  // add('switch', () => testSwitch(9)),
+  // add('ternary', () => testTernary(9)),
   cycle(),
   complete()
 );

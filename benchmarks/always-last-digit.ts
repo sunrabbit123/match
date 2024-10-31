@@ -10,6 +10,23 @@ import { match } from '../src';
 
 type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
+const mockMatch = (digit: Digit) => {
+  return match(digit)
+    .cases(
+      [0, () => 'zero'],
+      [1, () => 'one'],
+      [2, () => 'two'],
+      [3, () => 'three'],
+      [4, () => 'four'],
+      [5, () => 'five'],
+      [6, () => 'six'],
+      [7, () => 'seven'],
+      [8, () => 'eight'],
+      [9, () => 'nine']
+    )
+    .run().handled;
+};
+
 const testMatch = (digit: Digit) => {
   return match(digit)
     .case(0, () => 'zero')
@@ -133,9 +150,10 @@ const testTernary = (digit: Digit) => {
 
 suite(
   '@sunrabbit123/match.benchmark/always-last-digit',
-  add('@sunrabbit123/match.run()', () => testMatch(9)),
   add('ts-pattern.exhaustive()', () => testTsPatternExhaustive(9)),
   add('ts-pattern.otherwise()', () => testTsPatternOtherwise(9)),
+  add('@sunrabbit123/match.cases()', () => mockMatch(9)),
+  add('@sunrabbit123/match.case()', () => testMatch(9)),
   add('if/else', () => testIfElse(9)),
   add('switch', () => testSwitch(9)),
   add('ternary', () => testTernary(9)),

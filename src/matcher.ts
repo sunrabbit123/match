@@ -18,44 +18,27 @@ export class Matcher<const T, R = never> {
     private target: T,
     state?: MatcherState<R>
   ) {
-    this.state = state ? state : { matched: false, handled: undefined };
+    this.state = state || { matched: false, handled: undefined };
   }
 
-  public case<U extends T, V>(
-    ...[guard, handler]: readonly [guard: Pattern<T, U>, handler: (guarded: U) => V]
-  ): Matcher<Exclude<T, U>, R | V> {
+  public case<U extends T, V>(pattern: Pattern<T, U>, handler: (result: U) => V): Matcher<Exclude<T, U>, R | V> {
     if (this.state.matched) {
       return this as Matcher<Exclude<T, U>, R | V>;
     }
 
-    if (typeof guard === 'function') {
-      return this.applyGuardFunction(guard, handler) as Matcher<Exclude<T, U>, R | V>;
-    }
-
-    return this.applyGuardPrimitives(guard, handler) as Matcher<Exclude<T, U>, R | V>;
+    return this.applyPattern(pattern, handler) as Matcher<Exclude<T, U>, R | V>;
   }
 
-  private applyGuardFunction<U extends T, const V>(guard: (target: T) => target is U, handler: (guarded: U) => V) {
-    if (!guard(this.target)) {
+  private applyPattern<U extends T, const V>(pattern: Pattern<T, U>, handler: (result: U) => V) {
+    if (typeof pattern === 'function' && !pattern(this.target)) {
+      return this;
+    } else if (pattern !== this.target) {
       return this;
     }
 
     (this.state as MatcherState<R | V>) = {
       matched: true,
-      handled: handler(this.target),
-    };
-
-    return this;
-  }
-
-  private applyGuardPrimitives<U extends T, const V>(guard: U, handler: (guarded: U) => V) {
-    if (guard !== this.target) {
-      return this;
-    }
-
-    (this.state as MatcherState<R | V>) = {
-      matched: true,
-      handled: handler(guard),
+      handled: handler(this.target as U),
     };
 
     return this;

@@ -132,7 +132,7 @@ const testTernary = (digit: Digit) => {
 };
 
 suite(
-  '@sunrabbit123/match.benchmark',
+  '@sunrabbit123/match.benchmark/always-last-digit',
   add('@sunrabbit123/match.run()', () => testMatch(9)),
   add('ts-pattern.exhaustive()', () => testTsPatternExhaustive(9)),
   add('ts-pattern.otherwise()', () => testTsPatternOtherwise(9)),

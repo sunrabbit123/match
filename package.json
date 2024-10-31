@@ -32,6 +32,7 @@
     "test": "vitest run --coverage --typecheck",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write .",
+    "benchmark": "ts-node ./benchmarks/always-last-digit.ts && ts-node ./benchmarks/random-digit.ts",
     "bench-always-last-digit": "ts-node ./benchmarks/always-last-digit.ts",
     "bench-random-digit": "ts-node ./benchmarks/random-digit.ts"
   },

@@ -134,7 +134,7 @@ const testTernary = (digit: Digit) => {
 const rand = () => Math.floor(Math.random() * 10) as Digit;
 
 suite(
-  '@sunrabbit123/match-benchmark',
+  '@sunrabbit123/match-benchmark/random-digit',
   add('@sunrabbit123/match.run()', () => testMatch(rand())),
   add('ts-pattern.exhaustive()', () => testTspatternExhaustive(rand())),
   add('ts-pattern.otherwise()', () => testTsPatternOtherwise(rand())),

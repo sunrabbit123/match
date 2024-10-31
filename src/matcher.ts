@@ -93,6 +93,3 @@ export class Matcher<const T, R = never> {
 export const match = <const T>(target: T) => {
   return new Matcher(target);
 };
-
-const a: [1, 2] = [1, 2];
-a.find;

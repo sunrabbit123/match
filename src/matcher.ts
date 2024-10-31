@@ -13,6 +13,22 @@ export type Primitives = number | boolean | string | undefined | null | symbol |
 
 type Pattern<T, U extends T> = ((target: T) => target is U) | (U extends Primitives ? U : never);
 
+type CasesArgument<Target, Origin extends unknown[]> = Origin extends [
+  readonly [Pattern<Target, infer U>, (arg?: any) => unknown],
+]
+  ? U extends Target
+    ? Origin extends [readonly [Pattern<Target, U>, (arg: U) => unknown]]
+      ? Origin
+      : never
+    : never
+  : Origin extends [readonly [Pattern<Target, infer U>, (arg?: any) => unknown], ...infer Rest]
+    ? U extends Target
+      ? Origin extends [readonly [Pattern<Target, U>, (arg: U) => unknown], ...Rest]
+        ? [Origin[0], ...CasesArgument<Target, Rest>]
+        : never
+      : never
+    : never;
+
 export class Matcher<const T, R = never> {
   state: MatcherState<R>;
   constructor(
@@ -22,9 +38,21 @@ export class Matcher<const T, R = never> {
     this.state = state || { matched: false, handled: undefined };
   }
 
-  public cases<const Origin extends Array<unknown>>(...args: CasesArgument<T, Origin>) {
-    args;
-    // ^?
+  public cases<const Origin extends Array<unknown>>(...fnList: CasesArgument<T, Origin>) {
+    for (let i = 0; i < fnList['length']; i++) {
+      const pattern = fnList[i][0] as Pattern<T, T>;
+      if (typeof pattern === 'function' && !pattern(this.target)) {
+        continue;
+      } else if (pattern !== this.target) {
+        continue;
+      }
+
+      this.state = {
+        matched: true,
+        handled: (fnList[i][1] as (arg: T) => R)(this.target),
+      };
+      break;
+    }
     return this;
   }
   public case<U extends T, V>(pattern: Pattern<T, U>, handler: (result: U) => V): Matcher<Exclude<T, U>, R | V> {
@@ -62,26 +90,5 @@ export const match = <const T>(target: T) => {
   return new Matcher(target);
 };
 
-type CasesArgument<Target, Origin> = Origin extends [...(readonly [unknown, unknown])[]]
-  ? Origin extends [readonly [Pattern<Target, infer U>, (result: infer U) => infer V]]
-    ? U extends Target
-      ? [readonly [Pattern<Target, U>, (result: U) => V]]
-      : Origin
-    : Origin extends [readonly [Pattern<Target, infer U>, (result: infer U) => infer V], ...infer Rest]
-      ? [readonly [Pattern<Target, U>, (result: U) => V], ...CasesArgument<Target, Rest>]
-      : Origin
-  : never;
-
-// public cases<const Origin extends Array<unknown>>(...args: CasesArgument<T, Origin>) {
-//   args;
-//   // ^?
-//   return this;
-// }
-
-const a = new Matcher(1 as 1 | 2 | 3 | 4 | 5);
-a.cases([2, (v) => 'two']);
-// (method) Matcher<1 | 2 | 3 | 4 | 5, never>.cases<[readonly [2, () => "two"]]>(args_0: readonly [2, () => "two"]): Matcher<1 | 2 | 3 | 4 | 5, never>
-// (method) Matcher<2 | 1 | 3 | 4 | 5, never>.cases<[(number | (() => "two"))[]]>(args_0: (number | (() => "two"))[]): Matcher<2 | 1 | 3 | 4 | 5, never>
-a.cases([2, (v) => 'two'], [3, (v) => 'three']);
-// (method) Matcher<1 | 2 | 3 | 4 | 5, never>.cases<[readonly [2, () => "two"], readonly [3, () => "three"]]>(args_0: readonly [2, () => "two"], args_1: readonly [3, () => "three"]): Matcher<1 | 2 | 3 | 4 | 5, never>
-// (method) Matcher<2 | 1 | 3 | 4 | 5, never>.cases<[(number | (() => "two"))[], (number | (() => "three"))[]]>(args_0: (number | (() => "two"))[], args_1: (number | (() => "three"))[]): Matcher<2 | 1 | 3 | 4 | 5, never>
+const a: [1, 2] = [1, 2];
+a.find;

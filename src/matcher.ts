@@ -26,14 +26,12 @@ export class Matcher<const T, R = never> {
       return this as Matcher<Exclude<T, U>, R | V>;
     }
 
-    return this.applyPattern(pattern, handler) as Matcher<Exclude<T, U>, R | V>;
-  }
-
-  private applyPattern<U extends T, const V>(pattern: Pattern<T, U>, handler: (result: U) => V) {
-    if (typeof pattern === 'function' && !pattern(this.target)) {
-      return this;
+    if (typeof pattern === 'function') {
+      if (!pattern(this.target)) {
+        return this as Matcher<Exclude<T, U>, R | V>;
+      }
     } else if (pattern !== this.target) {
-      return this;
+      return this as Matcher<Exclude<T, U>, R | V>;
     }
 
     (this.state as MatcherState<R | V>) = {
@@ -41,8 +39,14 @@ export class Matcher<const T, R = never> {
       handled: handler(this.target as U),
     };
 
-    return this;
+    return this as Matcher<Exclude<T, U>, R | V>;
+
+    // return this.applyPattern(pattern, handler) as Matcher<Exclude<T, U>, R | V>;
   }
+
+  // private applyPattern<U extends T, const V>(pattern: Pattern<T, U>, handler: (result: U) => V) {
+
+  // }
 
   public run(): MatcherState<R> & { origin: T } {
     return {

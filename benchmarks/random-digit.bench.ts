@@ -6,32 +6,28 @@ type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 describe('@sunrabbit123/match-benchmark/random-digit', () => {
   const rand = () => Math.floor(Math.random() * 10) as Digit;
-  const digitToString = (digit: Digit) => {
-    switch (digit) {
-      case 0:
-        return 'zero';
-      case 1:
-        return 'one';
-      case 2:
-        return 'two';
-      case 3:
-        return 'three';
-      case 4:
-        return 'four';
-      case 5:
-        return 'five';
-      case 6:
-        return 'six';
-      case 7:
-        return 'seven';
-      case 8:
-        return 'eight';
-      case 9:
-        return 'nine';
-    }
-  };
+  const digitStrings = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
 
-  bench('@sunrabbit123/match.run()', () => {
+  bench('@sunrabbit123/match.cases.run()', () => {
+    const digit = rand();
+    const result = match(digit)
+      .cases(
+        [0, () => 'zero'],
+        [1, () => 'one'],
+        [2, () => 'two'],
+        [3, () => 'three'],
+        [4, () => 'four'],
+        [5, () => 'five'],
+        [6, () => 'six'],
+        [7, () => 'seven'],
+        [8, () => 'eight'],
+        [9, () => 'nine']
+      )
+      .run();
+    expect(result.handled).toBe(digitStrings[digit]);
+  });
+
+  bench('@sunrabbit123/match.case.run()', () => {
     const digit = rand();
     const result = match(digit)
       .case(0, () => 'zero')
@@ -45,7 +41,7 @@ describe('@sunrabbit123/match-benchmark/random-digit', () => {
       .case(8, () => 'eight')
       .case(9, () => 'nine')
       .run();
-    expect(result.handled).toBe(digitToString(digit));
+    expect(result.handled).toBe(digitStrings[digit]);
   });
 
   bench('ts-pattern.exhaustive()', () => {
@@ -62,7 +58,7 @@ describe('@sunrabbit123/match-benchmark/random-digit', () => {
       .with(8, () => 'eight')
       .with(9, () => 'nine')
       .exhaustive();
-    expect(result).toBe(digitToString(digit));
+    expect(result).toBe(digitStrings[digit]);
   });
 
   bench('ts-pattern.otherwise()', () => {
@@ -79,7 +75,7 @@ describe('@sunrabbit123/match-benchmark/random-digit', () => {
       .with(8, () => 'eight')
       .with(9, () => 'nine')
       .otherwise(() => '');
-    expect(result).toBe(digitToString(digit));
+    expect(result).toBe(digitStrings[digit]);
   });
 
   bench('if/else', () => {
@@ -106,7 +102,7 @@ describe('@sunrabbit123/match-benchmark/random-digit', () => {
     } else if (digit === 9) {
       result = 'nine';
     }
-    expect(result).toBe(digitToString(digit));
+    expect(result).toBe(digitStrings[digit]);
   });
 
   bench('switch', () => {
@@ -144,7 +140,7 @@ describe('@sunrabbit123/match-benchmark/random-digit', () => {
         result = 'nine';
         break;
     }
-    expect(result).toBe(digitToString(digit));
+    expect(result).toBe(digitStrings[digit]);
   });
 
   bench('ternary', () => {
@@ -171,6 +167,6 @@ describe('@sunrabbit123/match-benchmark/random-digit', () => {
                         : digit === 9
                           ? 'nine'
                           : '';
-    expect(result).toBe(digitToString(digit));
+    expect(result).toBe(digitStrings[digit]);
   });
 });
